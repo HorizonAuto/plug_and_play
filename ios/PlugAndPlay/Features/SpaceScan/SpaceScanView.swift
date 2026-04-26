@@ -252,27 +252,7 @@ struct SpaceResultView: View {
     @ViewBuilder
     private func annotatedThumbnail(path: String) -> some View {
         let absolute = URL(string: backendBaseURL.trimmingCharacters(in: .init(charactersIn: "/")) + path)
-        let frame = RoundedRectangle(cornerRadius: 14)
-        AsyncImage(url: absolute) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
-                    .background(.gray.opacity(0.15), in: frame)
-            case .success(let image):
-                image.resizable().scaledToFit()
-                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
-                    .background(Color.black, in: frame)
-                    .clipShape(frame)
-            case .failure:
-                Image(systemName: "photo.badge.exclamationmark")
-                    .font(.largeTitle).foregroundStyle(.secondary)
-                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
-                    .background(.gray.opacity(0.15), in: frame)
-            @unknown default:
-                EmptyView()
-            }
-        }
+        AnnotatedThumbnailView(url: absolute, width: Self.thumbWidth, height: Self.thumbHeight)
     }
 
     private var scoreColor: Color {
@@ -280,6 +260,93 @@ struct SpaceResultView: View {
         case 80...:    return .green
         case 60..<80:  return .yellow
         default:       return .red
+        }
+    }
+}
+
+/// AsyncImage replacement: explicit URLSession load with retry + diagnostic
+/// failure state. AsyncImage on newer iOS sometimes silently fails on first
+/// load over flaky tunnels; this gives us the actual error string on screen.
+private struct AnnotatedThumbnailView: View {
+    let url: URL?
+    let width: CGFloat
+    let height: CGFloat
+
+    @State private var image: UIImage?
+    @State private var error: String?
+    @State private var attempt: Int = 0
+
+    var body: some View {
+        let frame = RoundedRectangle(cornerRadius: 14)
+        Group {
+            if let image {
+                Image(uiImage: image).resizable().scaledToFit()
+                    .frame(width: width, height: height)
+                    .background(Color.black, in: frame)
+                    .clipShape(frame)
+            } else if let error {
+                VStack(spacing: 8) {
+                    Image(systemName: "photo.badge.exclamationmark")
+                        .font(.title)
+                        .foregroundStyle(.secondary)
+                    Text(error)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(4)
+                    if let url {
+                        Text(url.absoluteString)
+                            .font(.caption2.monospaced())
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(3)
+                            .truncationMode(.middle)
+                    }
+                    Text("Tap to retry")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.blue)
+                }
+                .padding(12)
+                .frame(width: width, height: height)
+                .background(.gray.opacity(0.15), in: frame)
+                .onTapGesture { attempt += 1 }
+            } else {
+                ProgressView()
+                    .frame(width: width, height: height)
+                    .background(.gray.opacity(0.15), in: frame)
+            }
+        }
+        .task(id: "\(url?.absoluteString ?? "")|\(attempt)") {
+            await load()
+        }
+    }
+
+    private func load() async {
+        guard let url else {
+            error = "URL is nil"
+            return
+        }
+        image = nil
+        error = nil
+        do {
+            var req = URLRequest(url: url)
+            req.timeoutInterval = 20
+            req.cachePolicy = .reloadIgnoringLocalCacheData
+            let (data, response) = try await URLSession.shared.data(for: req)
+            guard let http = response as? HTTPURLResponse else {
+                error = "non-HTTP response"
+                return
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                error = "HTTP \(http.statusCode)"
+                return
+            }
+            guard let ui = UIImage(data: data) else {
+                error = "decoded \(data.count) bytes but not a valid image (content-type \(http.value(forHTTPHeaderField: "Content-Type") ?? "?"))"
+                return
+            }
+            image = ui
+        } catch {
+            self.error = error.localizedDescription
         }
     }
 }
