@@ -8,7 +8,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
-from app.anticheat import audio_challenge, hash_verify, light_consistency, splice_detect
+from app.anticheat import audio_challenge, hash_verify, splice_detect
 from app.scoring.underwriting import score_phone_signal
 from app.services.audio import extract_mono_wav, transcribe
 from app.services.video_frames import extract_keyframes
@@ -22,36 +22,11 @@ UPLOADS_DIR = Path(__file__).resolve().parents[2] / "uploads"
 UPLOADS_DIR.mkdir(exist_ok=True)
 
 
-def _parse_iso(s: str | None) -> datetime | None:
-    if not s:
-        return None
-    try:
-        normalized = s.replace("Z", "+00:00") if s.endswith("Z") else s
-        dt = datetime.fromisoformat(normalized)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt
-    except ValueError:
-        return None
-
-
-def _parse_float(s: str | None) -> float | None:
-    if s is None or s == "":
-        return None
-    try:
-        return float(s)
-    except ValueError:
-        return None
-
-
 @router.post("/phone")
 async def verify_phone(
     video: UploadFile = File(...),
     challenge_code: str | None = Form(default=None),
     client_hash: str | None = Form(default=None),
-    gps_lat: str | None = Form(default=None),
-    gps_lon: str | None = Form(default=None),
-    captured_at: str | None = Form(default=None),
     keyframe_count: int = Form(default=4),
 ) -> dict:
     if video.content_type and not video.content_type.startswith("video/"):
@@ -76,10 +51,6 @@ async def verify_phone(
             shutil.copyfile(tmp_path, persisted_path)
         persisted_url = f"/uploads/{persisted_name}"
 
-        lat = _parse_float(gps_lat)
-        lon = _parse_float(gps_lon)
-        when = _parse_iso(captured_at)
-
         keyframes = extract_keyframes(tmp_path, count=keyframe_count)
 
         # Audio challenge: extract → transcribe → match against the displayed code.
@@ -94,7 +65,6 @@ async def verify_phone(
         anticheat_results = [
             hash_verify.verify(tmp_path, client_hash),
             splice_detect.check(keyframes),
-            light_consistency.check(keyframes, lat, lon, when),
             audio_challenge.check(transcript, challenge_code),
         ]
 

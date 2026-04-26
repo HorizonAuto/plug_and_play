@@ -16,7 +16,6 @@ def score_phone_signal(
             penalty = {
                 "hash": 30,
                 "splice_detection": 30,
-                "light_consistency": 25,
                 "physical_phone_visible": 35,
                 "audio_challenge": 35,
             }.get(check, 20)
