@@ -43,9 +43,9 @@ Server then renders bounding boxes onto copies of the source keyframes (green fo
 
 ### 3. Peer Recommendations & Vouching
 
-Trust-graph layer over the policy-issuance flow. Users can request recommendations from other users, and each vouch contributes a reputation-weighted boost to the recipient's underwriting profile. The recommender's own platform reputation determines the strength of the boost — established users with consistent vouching history move the needle more than new accounts.
+Trust-graph layer over the policy-issuance flow. Users request recommendations from peers, and each vouch contributes a reputation-weighted boost to the recipient's underwriting profile — established users with consistent vouching history move the needle more than new accounts. The score degrades cleanly to Features 1 + 2 when no vouches are present, so an account works on day one without a network.
 
-Implementation lives in a separate repository — *(link TBD; ask the maintainer)*. The trust-graph service exposes a vouching API that the underwriting scorer consumes when present, and degrades cleanly to the Feature 1 + 2 score when absent.
+Ships as part of this product.
 
 ---
 
