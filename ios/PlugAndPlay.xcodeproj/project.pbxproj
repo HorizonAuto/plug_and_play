@@ -28,7 +28,7 @@
 		15C3F4AD25BC98240FC3BAED /* SpaceScanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceScanViewModel.swift; sourceTree = "<group>"; };
 		3F25009AEBED1349E9419328 /* UnderwritingSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderwritingSignal.swift; sourceTree = "<group>"; };
 		4D29A90A5D9EA04F3978AF88 /* SpaceScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceScanResult.swift; sourceTree = "<group>"; };
-		64238203149C2DD220D2A215 /* PlugAndPlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlugAndPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		64238203149C2DD220D2A215 /* PlugAndPlay.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PlugAndPlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8666E21C29623011028D00DD /* VideoHasher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHasher.swift; sourceTree = "<group>"; };
 		8FAB827EC07A9EAAF975B3DD /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		95AA1522ECE8B3ECF18DBCEC /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -161,6 +161,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					20F55583316CC57888B7612B = {
+						DevelopmentTeam = X9D7HQ8K3K;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -214,7 +215,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R36X5MPYQL;
+				DEVELOPMENT_TEAM = X9D7HQ8K3K;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PlugAndPlay/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -235,7 +236,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R36X5MPYQL;
+				DEVELOPMENT_TEAM = X9D7HQ8K3K;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PlugAndPlay/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

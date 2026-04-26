@@ -246,25 +246,29 @@ struct SpaceResultView: View {
         UserDefaults.standard.string(forKey: "backendBaseURL") ?? "http://localhost:8000"
     }
 
+    private static let thumbWidth: CGFloat = 340
+    private static let thumbHeight: CGFloat = 460
+
     @ViewBuilder
     private func annotatedThumbnail(path: String) -> some View {
         let absolute = URL(string: backendBaseURL.trimmingCharacters(in: .init(charactersIn: "/")) + path)
+        let frame = RoundedRectangle(cornerRadius: 14)
         AsyncImage(url: absolute) { phase in
             switch phase {
             case .empty:
                 ProgressView()
-                    .frame(width: 220, height: 150)
-                    .background(.gray.opacity(0.15), in: RoundedRectangle(cornerRadius: 10))
+                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
+                    .background(.gray.opacity(0.15), in: frame)
             case .success(let image):
-                image.resizable().scaledToFill()
-                    .frame(width: 220, height: 150)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                image.resizable().scaledToFit()
+                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
+                    .background(Color.black, in: frame)
+                    .clipShape(frame)
             case .failure:
                 Image(systemName: "photo.badge.exclamationmark")
-                    .font(.title2).foregroundStyle(.secondary)
-                    .frame(width: 220, height: 150)
-                    .background(.gray.opacity(0.15), in: RoundedRectangle(cornerRadius: 10))
+                    .font(.largeTitle).foregroundStyle(.secondary)
+                    .frame(width: Self.thumbWidth, height: Self.thumbHeight)
+                    .background(.gray.opacity(0.15), in: frame)
             @unknown default:
                 EmptyView()
             }
