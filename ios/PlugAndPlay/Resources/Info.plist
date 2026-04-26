@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchScreen</key>
+    <dict/>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>arm64</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>NSCameraUsageDescription</key>
+    <string>Plug and Play needs the camera to capture the live phone-screen and space-scan videos that make underwriting tamper-proof.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Plug and Play records audio during capture so the live spoken-challenge step can be verified.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Plug and Play uses your location only at the moment of capture to cross-check the recording against time-of-day for anti-cheat.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Used only if you choose to save a copy of a capture for your own records.</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Plug and Play talks to a verification server running on your laptop on the same Wi-Fi. iOS requires this permission for any connection to a private-IP host on the local network.</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+    </dict>
+</dict>
+</plist>
